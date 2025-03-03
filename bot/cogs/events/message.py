@@ -54,8 +54,6 @@ class Messages(commands.Cog):
             self.clear_list_loop.start()
         print("Started loops from Messages")
 
-    
-
 
 async def setup(client:Bot):
     await client.add_cog(Messages(client))
