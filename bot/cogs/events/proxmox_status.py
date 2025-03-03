@@ -17,7 +17,12 @@ class ProxmoxStatus(commands.Cog):
 #   COMMANDS
 
 #   EVENTS
-
+    @commands.Cog.listener()
+    async def on_ready(self):
+        await self.check_created_status_channel()
+        self.start_loops()
+        print("started ProxmoxStatus")
+    
 #   TASKS
     @tasks.loop(minutes=5, name="update_infos")
     async def update_infos(self):
@@ -37,12 +42,7 @@ class ProxmoxStatus(commands.Cog):
                     
             except Exception as e:
                 print(f"Error sending message to {channel.name}: {e}")
-    
-    @commands.Cog.listener()
-    async def on_ready(self):
-        await self.check_created_status_channel()
-        self.start_loops()
-        print("started ProxmoxStatus")
+
         
 #   FUNCTIONS
     def start_loops(self):
