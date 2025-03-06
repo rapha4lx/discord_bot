@@ -1,11 +1,12 @@
 import asyncio
 
-import discord
-
 from bot.bot import Bot
 
 from time import sleep
 import os
+from dotenv import load_dotenv
+
+load_dotenv(".env")
 
 client = Bot()
 read = False
