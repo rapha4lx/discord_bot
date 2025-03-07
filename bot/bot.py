@@ -37,6 +37,6 @@ class Bot(commands.Bot):
         #         if extension.endswith('.py'):
         #             print(f"bot.cogs.{cogs}.{extension[:-3]}") #this [:-3] give the last 3 word of the extension
         #             await super().load_extension(f"bot.cogs.{cogs}.{extension[:-3]}")
-        await super().load_extension(f"bot.cogs.events.proxmox_status")
         await super().load_extension(f"bot.cogs.events.startup")
+        await super().load_extension(f"bot.cogs.events.proxmox_status")
         await super().load_extension(f"bot.cogs.events.message")
