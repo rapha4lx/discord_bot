@@ -32,9 +32,11 @@ class Bot(commands.Bot):
         super().__init__(command_prefix='.', intents=perm)
     
     async def load(self):
-        for cogs in os.listdir(f'bot/cogs'):
-            for extension in os.listdir(f'bot/cogs/{cogs}'):
-                if extension.endswith('.py'):
-                    print(f"bot.cogs.{cogs}.{extension[:-3]}") #this [:-3] give the last 3 word of the extension
-                    await super().load_extension(f"bot.cogs.{cogs}.{extension[:-3]}")
-
+        # for cogs in os.listdir(f'bot/cogs'):
+        #     for extension in os.listdir(f'bot/cogs/{cogs}'):
+        #         if extension.endswith('.py'):
+        #             print(f"bot.cogs.{cogs}.{extension[:-3]}") #this [:-3] give the last 3 word of the extension
+        #             await super().load_extension(f"bot.cogs.{cogs}.{extension[:-3]}")
+        await super().load_extension(f"bot.cogs.events.proxmox_status")
+        await super().load_extension(f"bot.cogs.events.startup")
+        await super().load_extension(f"bot.cogs.events.message")
