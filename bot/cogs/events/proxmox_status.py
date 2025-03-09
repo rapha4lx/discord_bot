@@ -9,8 +9,7 @@ from asyncio import Lock
 
 from datetime import datetime
 
-
-
+import json
 
 class ProxmoxStatus(commands.Cog):
     def __init__(self, client:Bot):
@@ -22,12 +21,11 @@ class ProxmoxStatus(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.check(is_create_proxmox_status)
     async def proxmox_status(self, interaction: discord.Interaction):
-        user: discord.Member = interaction.user
         guild: discord.Guild = interaction.guild
         channel: discord.TextChannel = None
 
+        channel = await guild.create_text_channel("proxmox-status-📈")
         with self.client.status_channel_mutex:
-            channel = await guild.create_text_channel("proxmox-status-📈")
             self.client.status_channel.append(channel)
 
         await interaction.response.send_message(
@@ -36,6 +34,26 @@ class ProxmoxStatus(commands.Cog):
             delete_after=7
             )
         await self.send_status_msg(channel)
+
+#   COMMANDS_ERROR
+    @proxmox_status.error
+    async def proxmox_status_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
+        if isinstance(error, app_commands.CheckFailure):
+            if not interaction.permissions.administrator:
+                await interaction.response.send_message(
+                    content="You dont have administrator perm",
+                    ephemeral=True,
+                    delete_after=7
+                )
+                return 
+            if not is_create_proxmox_status(interaction):
+                await interaction.response.send_message(
+                    content="Proxmox TextChannel has exist",
+                    ephemeral=True,
+                    delete_after=7
+                )
+                return
+
 
 #   EVENTS
     @commands.Cog.listener()
@@ -68,6 +86,20 @@ class ProxmoxStatus(commands.Cog):
             color=discord.Color.orange(),
             timestamp=datetime.now()
         )
+
+        with open("/mnt/storage/containers.json", "r", encoding="utf-8") as arquivo:
+            dados = json.load(arquivo)
+        
+        for container in dados["containers"]:
+            embed.add_field(name="ID/Name", value=f"{container["id"]} / {container["name"]}")
+            embed.add_field(name="Status", value=container["status"], inline=True)
+            ips:str = None
+            for containerIP in container["ip"]:
+                if ips:
+                    ips += f"\n{containerIP}"
+                else:
+                    ips = containerIP
+            embed.add_field(name="IP", value=ips, inline=True)
         return (embed)
 
     async def send_status_msg(self, channel:discord.TextChannel):
