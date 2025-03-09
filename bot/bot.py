@@ -4,15 +4,13 @@ from discord.ext import commands
 
 from threading import Lock
 
-import os
 import logging
 
-
-logging.basicConfig(level=logging.WARNING)
-
-
 class Bot(commands.Bot):
-    def __init__(self):
+    def __init__(self, logger:logging.Logger, daemon_logger:logging.Logger):
+        self.logger: logging.Logger = logger
+        self.daemon_logger: logging.Logger = daemon_logger
+
         perm:discord.Intents = discord.Intents.default()
         perm.message_content = True
         perm.members = True
@@ -40,3 +38,11 @@ class Bot(commands.Bot):
         await super().load_extension(f"bot.cogs.events.startup")
         await super().load_extension(f"bot.cogs.events.proxmox_status")
         await super().load_extension(f"bot.cogs.events.message")
+
+    async def on_shutdown(self):
+        self.daemon_logger.warning("Daemon Shutdown")
+        await self.close()
+    
+    async def on_restart(self):
+        self.daemon_logger.info("Daemon Restart")
+        await self.close()
