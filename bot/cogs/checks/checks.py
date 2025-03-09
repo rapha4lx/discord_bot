@@ -8,10 +8,7 @@ def is_role_sync_ctx(ctx:commands.Context) -> bool:
     roles = user.roles
     if not roles:
         return False
-    role = discord.utils.get(
-        user.roles,
-        name="sync"
-        )
+    role = discord.utils.get(user.roles, name="sync")
     if role:
         return True
     return False
@@ -22,10 +19,5 @@ def is_create_proxmox_status(interaction: discord.Interaction) -> bool:
             name="proxmox-status-📈"
         )
     if channel:
-        interaction.response.send_message(
-            content="Channel exist",
-            ephemeral=True,
-            delete_after=7
-            )
         return False
     return True
