@@ -6,25 +6,35 @@ from time import sleep
 import os
 from dotenv import load_dotenv
 
+from logs.logs import setup_logger
+from daemon.daemon import setup_daemon
+
 load_dotenv(".env")
 
-client = Bot()
-read = False
+app_logger = setup_logger('app.log')
+daemon_logger = setup_logger('daemon.log')
+
+client = Bot(logger=app_logger, daemon_logger=daemon_logger)
+
+ready = False
 
 async def main():
     global client
-    global read
+    global ready
 
-    print("test")
     await client.load()
-    read = True
+    ready = True
 
 asyncio.run(main())
 
-while not read:
-    sleep(1)
+setup_daemon(client=client)
 
 botkey = os.environ['BOT_KEY']
+
+while not ready:
+    sleep(1)
+
+daemon_logger.info("running")
 
 client.run(botkey)
 
