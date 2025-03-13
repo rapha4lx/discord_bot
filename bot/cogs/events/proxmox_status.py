@@ -87,19 +87,19 @@ class ProxmoxStatus(commands.Cog):
             timestamp=datetime.now()
         )
 
-        with open("/mnt/storage/containers.json", "r", encoding="utf-8") as arquivo:
+        with open('/mnt/storage/containers.json', 'r', encoding='utf-8') as arquivo:
             dados = json.load(arquivo)
         
-        for container in dados["containers"]:
-            embed.add_field(name="ID/Name", value=f"{container["id"]} / {container["name"]}")
-            embed.add_field(name="Status", value=container["status"], inline=True)
+        for container in dados['containers']:
+            embed.add_field(name='ID/Name', value=f"{container['id']} / {container['name']}")
+            embed.add_field(name='Status', value=container['status'], inline=True)
             ips:str = None
-            for containerIP in container["ip"]:
+            for containerIP in container['ip']:
                 if ips:
-                    ips += f"\n{containerIP}"
+                    ips += f'\n{containerIP}'
                 else:
                     ips = containerIP
-            embed.add_field(name="IP", value=ips, inline=True)
+            embed.add_field(name='IP', value=ips, inline=True)
         return (embed)
 
     async def send_status_msg(self, channel:discord.TextChannel):
