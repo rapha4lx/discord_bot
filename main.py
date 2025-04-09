@@ -7,9 +7,11 @@ import os
 from dotenv import load_dotenv
 
 from logs.logs import setup_logger
-from daemon.daemon import setup_daemon
+from daemon.daemon import setup_daemon, check_for_changes
+
 
 load_dotenv(".env")
+check_for_changes(os.getenv('REMOTE_CHECK_NAME'))
 
 app_logger = setup_logger('app.log')
 daemon_logger = setup_logger('daemon.log')
